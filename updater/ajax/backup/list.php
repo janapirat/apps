@@ -13,14 +13,14 @@
 namespace OCA\Updater;
 
 \OCP\JSON::checkAdminUser();
-//\OCP\JSON::callCheck();
+\OCP\JSON::callCheck();
 
 try {
 	$list = Helper::scandir(App::getBackupBase());
 } catch (Excepton $e) {
 	$list = array();
 }
-
+clearstatcache();
 $result = array();
 foreach ($list as $item){
 	if ($item=='.' || $item=='..'){
@@ -28,7 +28,7 @@ foreach ($list as $item){
 	}
 	$result[] = array(
 		'title' => $item,
-		'date' => date ("F d Y H:i:s.", filemtime($item))
+		'date' => date ("F d Y H:i:s.", filectime($item))
 	);
 }
 

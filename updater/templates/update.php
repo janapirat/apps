@@ -13,13 +13,12 @@
 ?>
 <?php $data=OC_Updater::check(); ?>
 <?php $isNewVersionAvailable = isset($data['version']) && strlen($data['version']) ?>
-<?php $navClass = $isNewVersionAvailable ? 'warn' : ''; ?>
-<div id="updater-content" ng-app="updater" ng-init="navigation=1">
+<div id="updater-content" ng-app="updater" ng-init="navigation='backup'">
 	<ul ng-model="navigation">
-		<li ng-click="navigation=1" class="current"><?php p($l->t('Backup Management')) ?></li>
-		<li ng-click="navigation=2" class="<?php p($navClass) ?>"><?php p($l->t('Update')) ?></li>
+		<li ng-click="navigation='backup'" ng-class="{current : navigation=='backup'}"><?php p($l->t('Backup Management')) ?></li>
+		<li ng-click="navigation='update'" ng-class="{current : navigation=='update', warn: <?php p($isNewVersionAvailable) ?> }"><?php p($l->t('Update')) ?></li>
 	</ul>
-	<fieldset ng-controller="backupCtrl" ng-hide="navigation!=1">
+	<fieldset ng-controller="backupCtrl" ng-show="navigation=='backup'">
 		<label for="backupbase"><?php p($l->t('Backup directory')) ?></label>
 		<input readonly="readonly" type="text" id="backupbase" value="<?php p(\OCA\Updater\App::getBackupBase()); ?>" />
 		<table ng-controller="backupCtrl">
@@ -32,15 +31,15 @@
 			</thead>
 			<tbody>
 				<tr ng-repeat="entry in entries">
-					<td>{{entry.title}}</td>
-					<td>{{entry.date}}</td>
-					<td><a href="">Delete</a></td>
+					<td title="<?php p($l->t('Download')) ?>" class="item" ng-click="doDownload(entry.title)">{{entry.title}}</td>
+					<td title="<?php p($l->t('Download')) ?>" class="item" ng-click="doDownload(entry.title)">{{entry.date}}</td>
+					<td title="<?php p($l->t('Delete')) ?>" class="item" ng-click="doDelete(entry.title)"><?php p($l->t('Delete')) ?></td>
 				</tr>
 				<tr ng-show="!entries.length"><td colspan="3"><?php p($l->t('No backups found')) ?></td></tr>
 			</tbody>
 		</table>
 	</fieldset>
-	<fieldset ng-controller="updateCtrl" ng-hide="navigation!=2">
+	<fieldset ng-controller="updateCtrl" ng-show="navigation=='update'">
 		<?php print_unescaped(OC_Updater::ShowUpdatingHint()) ?>
 		<div id="upd-progress" style="display:none;"><div></div></div>
 		<button ng-show="<?php p($isNewVersionAvailable) ?>" id="updater-backup"><?php p($l->t('Update')) ?></button>

@@ -19,6 +19,13 @@ namespace OCA\Updater;
 \OCP\Util::addStyle(App::APP_ID, 'updater');
 
 \OCP\User::checkAdminUser();
+
+if (@file_exists(App::getLegacyBackupBase())) {
+	try {
+		Helper::move(App::getLegacyBackupBase(), App::getBackupBase());
+	} catch (Exception $e){}
+}
+
 $tmpl = new \OCP\Template(App::APP_ID, 'update', 'guest');
 
 $tmpl->printPage();

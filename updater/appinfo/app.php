@@ -31,6 +31,10 @@ class App {
 	 * @return string
 	 */
 	public static function getBackupBase() {
+		return \OC_Config::getValue("datadirectory", \OC::$SERVERROOT . "/data") . '/updater_backup/';
+	}
+	
+	public static function getLegacyBackupBase() {
 		return \OC::$SERVERROOT . '/backup/';
 	}
 
